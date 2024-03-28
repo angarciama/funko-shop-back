@@ -7,7 +7,6 @@
 const toThousand = n => n.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".");
 //const nuevoLanzamiento = products.filter((producto)=> producto.lanzamiento ==='nuevo');
 //const peliculas = products.filter((producto) => producto.category ==="peliculas" );
-const db = require('../database/models');
 const sequelize = db.sequelize
 const {Op} = require('sequelize')
 

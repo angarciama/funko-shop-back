@@ -1,5 +1,4 @@
 const bcrypt = require("bcryptjs")
-const {User} = require('../../database/models');
 const { Op, JSON } = require("sequelize");
 const userApiController = {
 

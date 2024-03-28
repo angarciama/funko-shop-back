@@ -1,26 +1,23 @@
-const bcrypt = require("bcryptjs");
-
 module.exports = (sequelize , dataTypes) => {
     let alias= "User";
     let cols = {
-        id :{ 
+        id :{
             type: dataTypes.INTEGER,
             primaryKey: true,
-            autoIncrement: true    
+            autoIncrement: true
         },
         full_name : {
-        type: dataTypes.STRING(255),
-        allowNull: false
+            type: dataTypes.STRING(255),
+            allowNull: false
         },
         user_name : {
-        type: dataTypes.STRING(255),
-        allowNull: false,
+            type: dataTypes.STRING(255),
+            allowNull: false,
         },
-    
         email : {
-        type: dataTypes.STRING(255),
-        allowNull: false,
-        unique: true
+            type: dataTypes.STRING(255),
+            allowNull: false,
+            unique: true
         },
         password : {
             type: dataTypes.STRING(255),
@@ -35,21 +32,10 @@ module.exports = (sequelize , dataTypes) => {
             defaultValue:2,
             foreignKey: true
         },
-        
-
-
-
-
     }
     let config = {
         timestamps: false,
         tableName: "users",
-        // hooks:{
-        //     beforeCreate: async (user) =>{
-        //         const salt = await bcrypt.genSalt(10);
-        //         user.password = await bcrypt.hash(user.password, salt);
-        //     },
-        // }
     }
 
     const User = sequelize.define(alias, cols, config);
@@ -68,14 +54,7 @@ module.exports = (sequelize , dataTypes) => {
             foreignKey:"user_id",
             otherKey: "product_id",
             timestamps: false
-    });
-
-    // User.prototype.validPassword = async function (password) {
-    //     return await bcrypt.compare(password, this.password);
-    // }
-        
+        });
     }
-
     return User;
 }
-
