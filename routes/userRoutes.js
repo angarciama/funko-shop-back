@@ -4,13 +4,7 @@ const router = express.Router();
 const userController = require('../controllers/userController');
 
 //Middlewares
-
-const uploadFile = require('../middlewares/multerMiddleware');
 const validations = require('../middlewares/validateRegisterMiddleware');
-const guesMiddleware = require('../middlewares/guesMiddleware');
-const authMiddleware = require('../middlewares/authMiddleware');
-
-
 
 
 //ADMIN REGISTER

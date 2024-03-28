@@ -1,28 +1,14 @@
 const bcryptjs = require('bcryptjs');
 const { validationResult } = require('express-validator');
-const { memoryStorage } = require('multer');
 
 const db = require('../database/models')
-const sequelize = db.sequelize
-const {Op} = require('sequelize');
-const session = require('express-session');
 
 const User = db.User
 const CategoryUser = db.CategoryUser
 
-
-
 const userController = {
 
 //ARMIN REGISTER
-    adminRegister:  (req, res) => {
-    //permite guardar la informacion del usuario logueado para mostrarla en la barra de navegacion
-        let userLogged = req.session.userId
-
-   
-        return res.render('./users/admin-register',{userLogged});
-    },
-
     saveAdminRegister: async (req, res) =>{
         let userLogged = req.session.userId
         const resultValidation = validationResult(req);
@@ -32,8 +18,7 @@ const userController = {
             email:emailExits
             }
         });
-        
-       
+
         if (userInDB) {
             res.render('./users/admin-register',{
                 errors: [{ email :{msg: 'Este correo electrónico ya existe'}}],
@@ -53,8 +38,7 @@ const userController = {
             category_user_id:1
             
         } 
-        
-        
+
          await User.create(userToCreate)
           return  res.redirect('/user/login')
        } else  {
@@ -65,11 +49,9 @@ const userController = {
                userLogged
            })
        }
-       
     },
 
     adminProfile: (req,res) => {
-    
         return res.render('./users/admin-profile',{userLogged: req.session.userId});
      },
 
@@ -112,8 +94,7 @@ const userController = {
             category_user_id:2
             
         } 
-        
-        
+
          await User.create(userToCreate)
           return  res.redirect('/user/login')
        } else  {
@@ -124,8 +105,6 @@ const userController = {
                userLogged
            })
        }
-       
-
     },
 
     editUser: async (req,res) =>{
@@ -140,21 +119,14 @@ const userController = {
         } catch (error) {
             console.log(error);
         }
-        
-
     },
     saveEdition: async (req,res) =>{
-
         try {
-            
             const id = req.params.id
-
             const userImage = await User.findByPk(id)
 
             let image = req.file ?  req.file.filename : userImage.profile_picture;
             const {full_name,email,user_name}=req.body
-
-            
 
             await User.update({
                 full_name,
@@ -172,16 +144,12 @@ const userController = {
             } else{
                 return res.redirect("/user/profile")
             }
-       
-            
         } catch (error) {
             console.log(error);
         }
     },
 
-
     //LOGIN USER
-
     login: (req,res) => {
         let userLogged = req.session.userId
 

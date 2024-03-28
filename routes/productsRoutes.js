@@ -6,10 +6,6 @@ const path = require('path');
 
 const productsController = require('../controllers/productsController');
 
-const uploadFileProduct = require('../middlewares/multerMiddlewareProducts');
-const guesMiddleware = require('../middlewares/guesMiddleware');
-const authMiddleware = require('../middlewares/authMiddleware');
-
 const storage = multer.diskStorage({
     destination: (req, file, cb) => cb(null, path.join(__dirname, '../public/img/productsImages')),
     filename: (req, file, cb) => cb(null, Date.now() + '-' + file.originalname)

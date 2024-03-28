@@ -18,8 +18,6 @@ app.use('/api/auth', authRoutes);
 app.use('/api/users', userRotes);
 app.use('/api/products', productRoutes);
 
-
-
 //Rutas
 const mainRoutes = require('./routes/mainRoutes');
 const userRoutes = require('./routes/userRoutes');
