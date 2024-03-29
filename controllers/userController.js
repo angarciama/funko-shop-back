@@ -1,10 +1,9 @@
 const bcryptjs = require('bcryptjs');
 const { validationResult } = require('express-validator');
+const User = require('../models/users/User');
 
-const createAdminUser = async (req, res) => {
+exports.createUser = async (req, res) => {
     try {
-        const { full_name, user_name, email, password } = req.body;
-
         // Validar la entrada del formulario
         const resultValidation = validationResult(req);
         if (!resultValidation.isEmpty()) {
@@ -19,138 +18,80 @@ const createAdminUser = async (req, res) => {
 
         // Crear un nuevo usuario en la base de datos
         const hashedPassword = await bcryptjs.hash(password, 10);
-        await User.create({
+        const user = await User.create({
             full_name,
             user_name,
             email,
             password: hashedPassword,
-            profile_picture: req.file.filename,
-            category_user_id: 1
+            profile_picture,
+            category_user_id
         });
 
-        return res.status(201).json({ message: 'Registro exitoso' });
+        res.json(user);
     } catch (error) {
-        console.error('Error processing admin registration:', error);
-        return res.status(500).json({ error: 'Error interno del servidor' });
+        res.status(500).json({ error: 'Internal server error' });
     }
 };
 
-const createUser = async (req, res) => {
+exports.getAllUsers = async (req, res) => {
     try {
-        const { full_name, user_name, email, password } = req.body;
+        const users = await User.findAll();
 
-        // Validar la entrada del formulario
-        const resultValidation = validationResult(req);
-        if (!resultValidation.isEmpty()) {
-            return res.status(400).json({ errors: resultValidation.array() });
+        if (!users) {
+            return res.status(404).json({ error: 'Users not found' });
         }
 
-        // Verificar si el correo electrónico ya está en uso
-        const emailExists = await User.findOne({ where: { email: email } });
-        if (emailExists) {
-            return res.status(400).json({ error: 'Este correo electrónico ya existe' });
+        res.json(users);
+    } catch (error) {
+        res.status(500).json({ error: 'Internal server error' });
+    }
+};
+
+exports.getUserById = async (req, res) => {
+    try {
+        const user = await User.findByPk(req.params.id);
+
+        if (!user) {
+            return res.status(404).json({ error: 'User not found' });
         }
 
-        // Crear un nuevo usuario en la base de datos
-        const hashedPassword = await bcryptjs.hash(password, 10);
-        await User.create({
-            full_name,
-            user_name,
-            email,
-            password: hashedPassword,
-            profile_picture: req.file.filename,
-            category_user_id: 2
-        });
-
-        return res.status(201).json({ message: 'Registro exitoso' });
-    } catch (error) {
-        console.error('Error processing registration:', error);
-        return res.status(500).json({ error: 'Error interno del servidor' });
-    }
-};
-
-const userList = async (req, res) => {
-    try {
-        const users = await User.findAll({
-            attributes: ['id', 'user_name', 'email']
-        });
-
-        const userList = users.map(user => ({
-            id: user.id,
-            name: user.user_name,
-            email: user.email,
-            url: `http://localhost:4000/api/user/${user.id}`
-        }));
-
-        const data = {
-            count: userList.length,
-            users: userList
-        };
-
-        return res.json(data);
-    } catch (error) {
-        console.error('Error processing user list:', error);
-        return res.status(500).json({ error: 'Error interno del servidor' });
-    }
-};
-
-const detailUser = async (req, res) => {
-    try {
-        const id = req.params.id;
-        const user = await User.findByPk(id);
-
-        const data = {
-            id: id,
-            full_name: user.full_name,
-            user_name: user.user_name,
-            email: user.email,
-            image_link: `http://localhost:4000/img/profilePictures/${user.profile_picture}`
-        };
-
-        return res.json(data);
+        res.json(user);
     } catch (error) {
         console.error('Error processing user detail:', error);
         return res.status(500).json({ error: 'Error interno del servidor' });
     }
 };
 
-const editUser = async (req, res) => {
+exports.updateUser = async (req, res) => {
     try {
-        const id = req.params.id;
-        const { full_name, email, user_name } = req.body;
+        const user = await User.findByPk(req.params.id);
 
-        let image = req.file ? req.file.filename : null;
+        if (!user) {
+            return res.status(404).json({ error: 'User not found' });
+        }
 
         await User.update({
             full_name,
             user_name,
             email,
-            profile_picture: image
-        }, { where: { id: id } });
+            image,
+        }, { where: { id: user } });
 
-        return res.status(200).json({ message: 'Edición guardada exitosamente' });
+        res.json(user);
     } catch (error) {
-        console.error('Error saving user edition:', error);
-        return res.status(500).json({ error: 'Error interno del servidor' });
+        res.status(400).json({ error: error.message });
     }
 };
 
-const deleteUser = async (req, res) => {
+exports.deleteUser = async (req, res) => {
     try {
-        const id = req.params.id;
-        await User.destroy({ where: { id: id } });
-        return res.status(200).json({ message: 'Usuario eliminado exitosamente' });
+        const user = await User.findByPk(req.params.id);
+        if (!user) {
+            return res.status(404).json({ error: 'User not found' });
+        }
+        await user.destroy();
+        res.json({ message: 'User deleted successfully' });
     } catch (error) {
-        console.error('Error deleting user:', error);
-        return res.status(500).json({ error: 'Error interno del servidor' });
+        res.status(500).json({ error: 'Internal server error' });
     }
-};
-
-module.exports = {
-    createAdminUser,
-    createUser,
-    userList,
-    detailUser,
-    editUser,
-    deleteUser
 };
