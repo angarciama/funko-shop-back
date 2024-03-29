@@ -1,41 +1,33 @@
 const express = require('express');
 const router = express.Router();
-//controller
 const userController = require('../controllers/userController');
+const { body } = require('express-validator');
 
-//Middlewares
-const validations = require('../middlewares/validateRegisterMiddleware');
+// Rutas para crear usuarios
+router.post('/admin', [
+    body('full_name').notEmpty().withMessage('El nombre completo es obligatorio'),
+    body('user_name').notEmpty().withMessage('El nombre de usuario es obligatorio'),
+    body('email').isEmail().withMessage('Ingrese un correo electrónico válido'),
+    body('password').isLength({ min: 6 }).withMessage('La contraseña debe tener al menos 6 caracteres'),
+], userController.createAdminUser);
 
+router.post('/', [
+    body('full_name').notEmpty().withMessage('El nombre completo es obligatorio'),
+    body('user_name').notEmpty().withMessage('El nombre de usuario es obligatorio'),
+    body('email').isEmail().withMessage('Ingrese un correo electrónico válido'),
+    body('password').isLength({ min: 6 }).withMessage('La contraseña debe tener al menos 6 caracteres'),
+], userController.createUser);
 
-//ADMIN REGISTER
-router.get('/admin-register', guesMiddleware, userController.adminRegister);
-router.post('/admin-register',uploadFile.single('profile_picture'),validations.register, userController.saveAdminRegister)
-router.get('/admin-profile', authMiddleware, userController.adminProfile);
+// Ruta para obtener la lista de usuarios
+router.get('/', userController.userList);
 
-//CRUD Usuarios
+// Ruta para obtener detalles de un usuario específico
+router.get('/:id', userController.detailUser);
 
-//Formulario de registro <Create>
-router.get('/register', guesMiddleware, userController.register);
+// Ruta para editar un usuario
+router.put('/:id', userController.editUser);
 
-//Processar el registro <Create>
-router.post('/register',uploadFile.single('profile_picture'), validations.register, userController.processRegister)
-
-//Formulario de edicion <Uptade>
-router.get('/edit/:id',authMiddleware, userController.editUser)
-
-router.post('/edit/:id',uploadFile.single('profile_picture'), validations.userEdition, userController.saveEdition)
-
-
-//Formulario del login
-router.get('/login', guesMiddleware, userController.login);
-
-// Proceso formulario del login
-router.post('/login', userController.loginProcess);
-
-// perfil de usuario
-router.get('/profile', authMiddleware, userController.profile);
-
-// logout  
-router.get('/logout',  userController.logout);
+// Ruta para eliminar un usuario
+router.delete('/:id', userController.deleteUser);
 
 module.exports = router;

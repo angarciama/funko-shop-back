@@ -1,9 +1,6 @@
-
 const { body } = require('express-validator');
-const path = require('path');
 const validations = {
 	register: [
-
 		// Nombre completo y nombre de usuario
 		body('full_name').notEmpty().withMessage('Ingresa tu nombre completo')
 						.isLength({min:6}).withMessage('El nombre debe contener minimo 6 caracteres'),
@@ -16,8 +13,6 @@ const validations = {
 		body('email').notEmpty().bail()
 						.isEmail().bail()
 						.withMessage('Ingresar un email válido'),
-		
-
 		//password con mas de 8 caracteres
 		body('password').notEmpty().withMessage('Ingrese una contraseña').bail()
 						.isStrongPassword({
@@ -27,7 +22,6 @@ const validations = {
 							minNumbers: 1,
 							minSymbols: 1
 						}).withMessage('La contraseña debe contener minimo: 8 caracteres, una mayuscula, una miniscula, un numero y un caracter especial'),
-
 		// la confirmacion de contraseña debe coincidir
 		body('re_password', 'Las contraseñas no coinciden')
 			.exists()

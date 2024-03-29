@@ -28,4 +28,3 @@ module.exports = (sequelize , dataTypes) => {
 
     return CategoryUser;
 }
-
