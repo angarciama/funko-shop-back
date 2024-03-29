@@ -70,11 +70,13 @@ exports.updateUser = async (req, res) => {
             return res.status(404).json({ error: 'User not found' });
         }
 
+        const hashedPassword = await bcryptjs.hash(req.body.password, 10);
         await User.update({
-            full_name,
-            user_name,
-            email,
-            image,
+            full_name: req.body.full_name,
+            user_name: req.body.user_name,
+            email: req.body.email,
+            password: hashedPassword,
+            profile_picture: req.body.profile_picture,
         }, { where: { id: user } });
 
         res.json(user);
