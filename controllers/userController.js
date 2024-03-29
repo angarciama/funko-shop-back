@@ -11,20 +11,20 @@ exports.createUser = async (req, res) => {
         }
 
         // Verificar si el correo electrónico ya está en uso
-        const emailExists = await User.findOne({ where: { email: email } });
+        const emailExists = await User.findOne({ where: { email: req.body.email } });
         if (emailExists) {
             return res.status(400).json({ error: 'Este correo electrónico ya existe' });
         }
 
         // Crear un nuevo usuario en la base de datos
-        const hashedPassword = await bcryptjs.hash(password, 10);
+        const hashedPassword = await bcryptjs.hash(req.body.password, 10);
         const user = await User.create({
-            full_name,
-            user_name,
-            email,
+            full_name: req.body.full_name,
+            user_name: req.body.user_name,
+            email: req.body.email,
             password: hashedPassword,
-            profile_picture,
-            category_user_id
+            profile_picture: req.body.profile_picture,
+            category_user_id: req.body.category_user_id,
         });
 
         res.json(user);
