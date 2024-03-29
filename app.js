@@ -36,9 +36,6 @@ app.use(mainRoutes);
 app.use('/user', userRoutes);
 app.use('/products', productsRoutes);
 //Api Rotes
-app.use('/api/user', require('./routes/api/userApiRoute'));
-
-
 
 // Manejador de errores
 app.use(errorHandler);
