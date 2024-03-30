@@ -11,8 +11,6 @@ router.post('/login', [
 ], authController.login);
 
 // Ruta para verificar el token
-router.get('/verify-token', authMiddleware.verifyTokenMiddleware, (req, res) => {
-    res.status(200).json({ msg: 'Token válido' });
-});
+router.get('/verify-token', authController.verifyToken);
 
 module.exports = router;
