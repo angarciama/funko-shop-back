@@ -13,7 +13,7 @@ exports.createProduct = async (req, res) => {
 			product_name: req.body.product_name,
 			product_description: req.body.product_description,
 			image: req.body.image,
-			category_id: req.body.category,
+			category_id: req.body.category_id,
 			price: req.body.price
 		})
 
@@ -79,7 +79,7 @@ exports.updateProduct = async (req, res) => {
 			return res.status(404).json({ error: 'Product not found' });
 		}
 
-		res.json({ message: 'Product updated successfully' });
+		res.json(product);
 	} catch (error) {
 		res.status(500).json({ error: 'Internal server error' });
 	}
