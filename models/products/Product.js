@@ -5,28 +5,28 @@ class Product extends Model {}
 
 Product.init({
     id :{
-        type: dataTypes.INTEGER,
+        type: DataTypes.INTEGER,
         primaryKey: true,
         autoIncrement: true
     },
     product_name : {
-        type: dataTypes.STRING(255),
+        type: DataTypes.STRING(255),
         allowNull: false
     },
     product_description : {
-        type: dataTypes.TEXT,
+        type: DataTypes.TEXT,
         allowNull: false,
     },
     image : {
-        type: dataTypes.STRING(255),
+        type: DataTypes.STRING(255),
         allowNull: false,
     },
     price : {
-        type: dataTypes.INTEGER,
+        type: DataTypes.INTEGER,
         allowNull: false
     },
     category_id : {
-        type: dataTypes.INTEGER,
+        type: DataTypes.INTEGER,
         allowNull: false,
         foreignKey: true
     },

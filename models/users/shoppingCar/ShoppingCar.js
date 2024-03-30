@@ -5,24 +5,24 @@ class ShoppingCar extends Model {}
 
 ShoppingCar.init({
     id: {
-        type: dataTypes.INTEGER,
+        type: DataTypes.INTEGER,
         primaryKey: true,
         autoIncrement: true
     },
     quantity: {
-        type: dataTypes.INTEGER,
+        type: DataTypes.INTEGER,
         allowNull: false
     },
     unit_price: {
-        type: dataTypes.INTEGER,
+        type: DataTypes.INTEGER,
         allowNull: false,
     },
     total_price: {
-        type: dataTypes.INTEGER,
+        type: DataTypes.INTEGER,
         allowNull: false,
     },
     product_user_id: {
-        type: dataTypes.INTEGER,
+        type: DataTypes.INTEGER,
         allowNull: false,
         foreignKey: true
     }

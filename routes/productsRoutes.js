@@ -1,7 +1,6 @@
 const express = require('express');
 const router = express.Router();
-const productController = require('./controllers/productController');
-const { body } = require('express-validator');
+const productController = require('../controllers/productsController');
 
 // Rutas para productos
 router.post('/create', [

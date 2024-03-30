@@ -5,12 +5,12 @@ class CategoryProduct extends Model {}
 
 CategoryProduct.init({
     id :{
-        type: dataTypes.INTEGER,
+        type: DataTypes.INTEGER,
         primaryKey: true,
         autoIncrement: true
     },
     name_category : {
-        type: dataTypes.STRING(255),
+        type: DataTypes.STRING(255),
         allowNull: true
     }
 }, {

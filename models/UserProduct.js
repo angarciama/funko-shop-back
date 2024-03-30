@@ -5,15 +5,15 @@ class UserProduct extends Model {}
 
 UserProduct.init({
     id :{
-        type: dataTypes.INTEGER,
+        type: DataTypes.INTEGER,
         primaryKey: true,
         autoIncrement: true
     },
-    user_id: {type: dataTypes.INTEGER,
+    user_id: {type: DataTypes.INTEGER,
         foreignKey: true,
         allowNull: false
     },
-    product_id : {type: dataTypes.INTEGER,
+    product_id : {type: DataTypes.INTEGER,
         foreignKey: true,
         allowNull: false,
     }
