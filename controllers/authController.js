@@ -42,7 +42,7 @@ exports.login = async (req, res) => {
     }
 };
 
-exports.verifyToken = (req, res, next) => {
+exports.verifyToken = (req, res) => {
     // Obtener el token del encabezado de autorización
     const token = req.header('Authorization');
 
@@ -58,7 +58,10 @@ exports.verifyToken = (req, res, next) => {
     // Verificar el token
     try {
         const decoded = jwt.verify(tokenString, process.env.JWT_SECRET);
-        req.user = decoded.user;
+
+        if (!decoded) {
+            return res.status(401).json({ msg: 'Token no válido' });
+        }
 
         res.status(200).json({ msg: 'Token válido' });
     } catch (error) {
