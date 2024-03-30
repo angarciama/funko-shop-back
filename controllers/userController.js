@@ -27,6 +27,10 @@ exports.createUser = async (req, res) => {
             category_user_id: req.body.category_user_id,
         });
 
+        if (!user) {
+            return res.status(404).json({ error: 'User not found' });
+        }
+
         res.json(user);
     } catch (error) {
         res.status(500).json({ error: 'Internal server error' });
@@ -78,6 +82,10 @@ exports.updateUser = async (req, res) => {
             password: hashedPassword,
             profile_picture: req.body.profile_picture,
         }, { where: { id: user } });
+
+        if (!user) {
+            return res.status(404).json({ error: 'User not found' });
+        }
 
         res.json(user);
     } catch (error) {

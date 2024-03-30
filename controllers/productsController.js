@@ -1,127 +1,99 @@
-const fs = require('fs');
-const path = require('path');
-// const { brotliDecompress } = require('zlib');
-// const { BLOB } = require('sequelize/types');
-// const { brotliDecompress } = require('zlib');
+const Product = require('../models/products/Product');
+const {validationResult} = require("express-validator");
 
-// const productsFilePath = path.join(__dirname,'../database/products.json');
-// const products = JSON.parse(fs.readFileSync(productsFilePath,'utf-8'));
-
-
-const Product = db.Product
-const CategoryProduct = db.CategoryProduct
-
-
-
-const toThousand = n => n.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".");
-
-module.exports = {
-    
-    products : (req, res) => {
-    
-		let userLogged = req.session.userId
-		const product = Product.findAll()
-		.then( (products) =>{
-			res.render('products', {products, toThousand, userLogged})
-		})
-    },
-
-  
-    
-    create: async (req, res) => {
-		let userLogged = req.session.userId
-		const allProduct = await CategoryProduct.findAll();
-		res.render('product-create-form.ejs', {allProduct, userLogged});
-
-	},
-	
-
-    createPost: async (req, res) => {
-		try {
-
-			let image = req.file ? req.file.filename : 'default-img.png'
-			await db.Product.create({
-				product_name: req.body.product_name,
-				product_description: req.body.product_description,
-				image: image,
-				category_id: req.body.category,
-				price: req.body.price
-			})
-	
-			res.redirect('/products')
-			
-		} catch (error) {
-			return res.send(error)
+exports.createProduct = async (req, res) => {
+	try {
+		// Validar la entrada del formulario
+		const resultValidation = validationResult(req);
+		if (!resultValidation.isEmpty()) {
+			return res.status(400).json({ errors: resultValidation.array() });
 		}
-		
-	},
 
-
-
-    listado: (req, res) => {
-		let userLogged = req.session.userId
-		db.Product.findAll()
-			.then(function(products){
-				res.render('listado-productos', {products: products, userLogged, toThousand});
-			})
-		
-
-	},
-
-
-	detalleProducto: (req, res) => {
-				
-		let userLogged = req.session.userId
-		db.Product.findByPk(req.params.id)
-			.then( function(products){
-				res.render('detalle-producto.ejs', {products: products, userLogged,toThousand});
-			})
-
-	},
-
-	edit: (req, res) => {
-
-		let userLogged = req.session.userId
-
-		let pedidoProducto = db.Product.findByPk(req.params.id);
-
-		let pedidoCategoria = db.CategoryProduct.findAll();
-
-		
-		Promise.all([pedidoProducto,pedidoCategoria,])
-		.then(function([product, category]){
-			res.render("editar-producto", {product:product, category:category, userLogged});
-		})
-		
-	},
-
-	actualizar: (req, res) => {
-		let image = req.file ? req.file.filename : 'default-img.png'
-			 db.Product.update({
-				product_name: req.body.name,
-				product_description: req.body.description,
-				image: image,
-				category_id: req.body.category,
-				price: req.body.price
-			},{
-				where: {
-					id: req.params.id
-				}
-			});
-
-			res.redirect("/products/" + req.params.id)
-	
-	},
-
-	delete: (req, res) => {
-		db.Product.destroy({
-			where: {
-				id: req.params.id
-			}
+		const product = await Product.create({
+			product_name: req.body.product_name,
+			product_description: req.body.product_description,
+			image: req.body.image,
+			category_id: req.body.category,
+			price: req.body.price
 		})
 
-		res.redirect("/")
+		if (!product) {
+			return res.status(404).json({ error: 'Product not found' });
+		}
+
+		res.json(product);
+	} catch (error) {
+		res.status(500).json({ error: 'Internal server error' });
 	}
+};
 
+exports.getAllProducts = async (req, res) => {
+	try {
+		const products = await Product.findAll();
 
- };
+		if (!products) {
+			return res.status(404).json({ error: 'Products not found' });
+		}
+
+		res.json(products);
+	} catch (error) {
+		res.status(500).json({ error: 'Internal server error' });
+	}
+};
+
+exports.getProductById = async (req, res) => {
+	try {
+		const product = await Product.findByPk(req.params.id);
+
+		if (!product) {
+			return res.status(404).json({ error: 'Product not found' });
+		}
+
+		res.json(product);
+	} catch (error) {
+		res.status(500).json({ error: 'Internal server error' });
+	}
+};
+
+exports.updateProduct = async (req, res) => {
+	try {
+		// Validar la entrada del formulario
+		const resultValidation = validationResult(req);
+		if (!resultValidation.isEmpty()) {
+			return res.status(400).json({ errors: resultValidation.array() });
+		}
+
+		const product = await Product.findByPk(req.params.id);
+		if (!product) {
+			return res.status(404).json({ error: 'Product not found' });
+		}
+		await product.update({
+			product_name: req.body.product_name,
+			product_description: req.body.product_description,
+			image: req.body.image,
+			category_id: req.body.category,
+			price: req.body.price
+		});
+
+		if (!product) {
+			return res.status(404).json({ error: 'Product not found' });
+		}
+
+		res.json({ message: 'Product updated successfully' });
+	} catch (error) {
+		res.status(500).json({ error: 'Internal server error' });
+	}
+};
+
+exports.deleteProduct = async (req, res) => {
+	try {
+		const product = await Product.findByPk(req.params.id);
+		if (!product) {
+			return res.status(404).json({ error: 'Product not found' });
+		}
+		await product.destroy();
+		res.json({ message: 'Product deleted successfully' });
+	} catch (error) {
+		res.status(500).json({ error: 'Internal server error' });
+	}
+};

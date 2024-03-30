@@ -1,46 +1,22 @@
 const express = require('express');
 const router = express.Router();
-const multer = require('multer');
+const productController = require('./controllers/productController');
+const { body } = require('express-validator');
 
-const path = require('path');
+// Rutas para productos
+router.post('/create', [
+    // Aquí puedes agregar validaciones si lo deseas
+], productController.createProduct);
 
-const productsController = require('../controllers/productsController');
+router.get('/all', productController.getAllProducts);
 
-const storage = multer.diskStorage({
-    destination: (req, file, cb) => cb(null, path.join(__dirname, '../public/img/productsImages')),
-    filename: (req, file, cb) => cb(null, Date.now() + '-' + file.originalname)
-});
+router.get('/:id', productController.getProductById);
 
-const upload = multer({storage});
+router.put('/:id/update', [
+    // Aquí puedes agregar validaciones si lo deseas
+], productController.updateProduct);
 
-router.get('/totalProducts',authMiddleware, productsController.products);
-
-router.get('/create',authMiddleware,productsController.create); 
-
-// router.post('/create', productsController.createPost); 
-router.post('/create',authMiddleware, upload.single('image'), productsController.createPost); 
-
-
-// LISTADO PRODUCTOS
-router.get('/',authMiddleware, productsController.listado); 
-
-// DETALLE PRODUCTOS
-
-
- router.get("/:id",authMiddleware, productsController.detalleProducto);
-
-// EDICION PRODUCTO
-router.get("/edit/:id",authMiddleware, productsController.edit);
-router.post("/edit/:id",upload.single('image'), productsController.actualizar);
-
-//DELETE
-router.post("/delete/:id", productsController.delete)
-
-
-
-//  router.post('/edit/', upload.single('image'), productsController.update); 
-
-// router.delete('/delete/:id', productsController.delete); 
+router.delete('/:id/delete', productController.deleteProduct);
 
 module.exports = router;
 
