@@ -5,6 +5,7 @@ const errorHandler = require('./utils/errorHandler');
 const sequelize = require('./config/database'); // Importar la instancia de Sequelize
 const userRoutes = require('./routes/userRoutes');
 const productsRoutes = require('./routes/productsRoutes');
+const authRoutes = require('./routes/authRoutes');
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -15,6 +16,7 @@ app.use(express.json());
 // Rutas de la aplicación
 app.use('/api/users', userRoutes);
 app.use('/api/products', productsRoutes);
+app.use('/api/auth', authRoutes);
 
 // Manejador de errores
 app.use(errorHandler);
