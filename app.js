@@ -6,9 +6,15 @@ const sequelize = require('./config/database'); // Importar la instancia de Sequ
 const userRoutes = require('./routes/userRoutes');
 const productsRoutes = require('./routes/productsRoutes');
 const authRoutes = require('./routes/authRoutes');
+const cors = require('cors');
 
 const app = express();
 const PORT = process.env.PORT || 3000;
+const allowedOrigin = process.env.ALLOWED_ORIGIN || '*';
+
+app.use(cors({
+    origin: allowedOrigin
+}));
 
 // Middleware para manejar datos JSON
 app.use(express.json());
