@@ -1,4 +1,4 @@
-# FUNKO SHOP FRONT
+# FUNKO SHOP BACKEND
 
 Back desarrollado con node y express. Es un proyecto base de backend para una web ecommerce.
 
